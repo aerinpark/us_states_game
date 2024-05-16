@@ -5,7 +5,8 @@ IMAGE_PATH = "blank_states_img.gif"
 STATES_PATH = "50_states.csv"
 STATES_COUNT = 50
 ALIGNMENT = "center"
-FONT = ('Arial', 10, "bold")
+STATE_FONT = ('Arial', 10, "bold")
+FONT = ('Arial', 30, "bold")
 
 correct_answers = []
 correct_number = 0
@@ -19,9 +20,12 @@ data = pandas.read_csv(STATES_PATH)
 states = data.state.to_list()
 
 game_on = True
+label = turtle.Turtle()
+label.penup()
+label.hideturtle()
 
 while game_on:
-    answer = screen.textinput(title="Guess the State", prompt="Type a name of a state")
+    answer = screen.textinput(title=f"Guess the State: {correct_number}/{STATES_COUNT}", prompt="Type a name of a state")
     answer = answer.capitalize()
     if answer in states and answer not in correct_answers:
         correct_answers.append(answer)
@@ -32,10 +36,15 @@ while game_on:
         x = state["x"].to_list()[0]
         y = state["y"].to_list()[0]
 
-        label = turtle.Turtle()
-        label.penup()
-        label.hideturtle()
         label.goto(x, y)
-        label.write(f"{answer}", True, align=ALIGNMENT, font=FONT)
-
+        label.write(f"{answer}", True, align=ALIGNMENT, font=STATE_FONT)
+    elif answer == "Stop":
+        game_on = False
+        screen.clear()
+        label.goto(0, 0)
+        label.write(f"You've completed {correct_number}/{STATES_COUNT}", True, align=ALIGNMENT, font=FONT)
+    if correct_number == STATES_COUNT:
+        game_on = False
+        label.goto(0, 0)
+        label.write("COMPLETED - GREAT JOB!", True, align=ALIGNMENT, font=FONT)
 screen.exitonclick()
