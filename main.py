@@ -33,16 +33,23 @@ while game_on:
         state = data[data.state == answer]
 
         # Get x & y of the correctly guessed state
-        x = state["x"].to_list()[0]
-        y = state["y"].to_list()[0]
+        x = int(state.x)
+        y = int(state.y)
 
         label.goto(x, y)
         label.write(f"{answer}", True, align=ALIGNMENT, font=STATE_FONT)
-    elif answer == "Stop":
+    elif answer == "Exit":
         game_on = False
         screen.clear()
         label.goto(0, 0)
         label.write(f"You've completed {correct_number}/{STATES_COUNT}", True, align=ALIGNMENT, font=FONT)
+
+        missing_states = []
+        for state in states:
+            if state not in correct_answers:
+                missing_states.append(state)
+        states_to_learn = pandas.DataFrame(missing_states)
+        states_to_learn.to_csv("states_to_learn.csv")
     if correct_number == STATES_COUNT:
         game_on = False
         label.goto(0, 0)
